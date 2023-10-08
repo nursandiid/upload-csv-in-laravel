@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogImportsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [LogImportsController::class, 'index'])->name('log_import.index');
+Route::get('/data', [LogImportsController::class, 'data'])->name('log_import.data');
+Route::post('/import', [LogImportsController::class, 'store'])->name('log_import.store');
