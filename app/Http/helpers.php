@@ -20,23 +20,25 @@ if (! function_exists('upload_file')) {
 
         return "/{$directory}/{$file_name}";
     }
+}
 
-    if (! function_exists('load_file')) {
-        /**
-         * 
-         * @param string $filepath
-         * @return string
-         */
-        function load_file($filepath)
-        {
-            if ($filepath && Storage::disk('public')->exists($filepath)) {
-                return url(Storage::disk('public')->url($filepath));
-            }
-    
-            return "";
+if (! function_exists('load_file')) {
+    /**
+     * 
+     * @param string $filepath
+     * @return string
+     */
+    function load_file($filepath)
+    {
+        if ($filepath && Storage::disk('public')->exists($filepath)) {
+            return url(Storage::disk('public')->url($filepath));
         }
-    }
 
+        return "";
+    }
+}
+
+if (! function_exists('utf8_cleaner')) {
     /**
      * 
      * Convert HTML entities to UTF-8 while ignoring invalid characters
