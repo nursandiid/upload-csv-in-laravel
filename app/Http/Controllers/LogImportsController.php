@@ -24,7 +24,7 @@ class LogImportsController extends Controller
      */
     public function data() 
     {
-        $logImports = LogImport::all();
+        $logImports = LogImport::latest()->get();
         $data = [];
 
         foreach ($logImports as $key => $item) {
