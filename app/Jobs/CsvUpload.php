@@ -50,6 +50,9 @@ class CsvUpload implements ShouldQueue
                     ], $attributes);
             }
 
+            // Send event to pusher and forward to view to update progressbar
+            event(new \App\Events\CsvImportProcessed('Successfully to import '. count($this->data) . ' data.'));
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

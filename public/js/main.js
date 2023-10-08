@@ -1,4 +1,5 @@
 const url = window.location.origin
+const pusherKey = '3ce7dfc6d3fab8ba50cc';
 
 // remove alert after 3 seconds if any
 const alert = document.querySelector('.alert')
@@ -7,6 +8,18 @@ if (alert !== null) {
         document.querySelector('.alert').remove()
     }, 3000)
 }
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true
+    
+const pusher = new Pusher(pusherKey, {
+  cluster: 'ap1'
+})
+
+const channel = pusher.subscribe('upload-csv');
+channel.bind('csv.imported', function (data) {
+    loadData()
+})
 
 loadData()
 
@@ -34,7 +47,7 @@ function loadData() {
                             <th scope="row" class="text-center">${key+1}</th>
                             <td>${time}</td>
                             <td>
-                                <a href="${file_path}" target="_blank" class="text-dark text-decoration-none">${file_name}</a>
+                                <a href="${file_path}" target="_blank" class="text-dark">${file_name}</a>
                             </td>
                             <td class="text-center">
                                 <span class="badge text-bg-${status_color}" style="min-width: 80px">${status}</span>
@@ -47,9 +60,15 @@ function loadData() {
                         </tr>
                     `
                 })
-
-                table.innerHTML = content
+            } else {
+                content += `
+                    <tr>
+                        <td colspan="5" class="text-center">Data is empty.</td>
+                    </tr>
+                `
             }
+
+            table.innerHTML = content
         })
         .catch(error => {
             console.error('Log uploads error:', error)

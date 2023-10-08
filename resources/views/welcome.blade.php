@@ -58,7 +58,7 @@
                 </div>
             </form>
 
-            <div class="col-lg-12 col-12">
+            <div class="col-lg-12 col-12 table-responsive">
                 <x-table class="table-bordered log-imports">
                     <x-slot name="thead">
                         <tr class="text-center">
@@ -71,9 +71,17 @@
                     </x-slot>
 
                     <tr>
-                        <td colspan="5" class="text-center">Data is empty.</td>
+                        <td colspan="5" class="text-center">Loading...</td>
                     </tr>
                 </x-table>
+
+                <div class="mt-3">
+                    <strong>Download example files:</strong>
+                    <ul>
+                        <li><a href="{{ asset('docs/yoprint_test_import.csv') }}" target="_blank" class="text-dark">yoprint_test_import.csv</a></li>
+                        <li><a href="{{ asset('docs/yoprint_test_updated.csv') }}" target="_blank" class="text-dark">yoprint_test_updated.csv</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -81,6 +89,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
     </script>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script>
 
 </body>
