@@ -38,7 +38,7 @@ class CsvUpload implements ShouldQueue
             foreach ($this->data as $row) {
                 $attributes = [];
                 
-                // select row field by fileted header
+                // select row field by filetered header
                 foreach ($this->filteredHeader as $field => $fieldIndex) {
                     $attributes[$field] = utf8_cleaner($row[$fieldIndex]);
                 }

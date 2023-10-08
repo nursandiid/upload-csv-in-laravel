@@ -24,7 +24,30 @@ class LogImportsController extends Controller
      */
     public function data() 
     {
-        //
+        $logImports = LogImport::all();
+        $data = [];
+
+        foreach ($logImports as $key => $item) {
+            $batch = Bus::findBatch($item->job_batch_id);
+            $getStatusOfBatch = $this->getStatusOfBatch($batch);
+
+            $row = [];
+            $row['id'] = $key+1;
+            $row['file_name'] = $item->file_name;
+            $row['time'] = now()->parse($item->created_at)->format('d-m-Y h:i A') 
+                . '<br>'
+                . '<span class="text-muted">'
+                    . now()->parse($item->created_at)->diffForHumans() 
+                . '</span>';
+            $row['status'] = $getStatusOfBatch['status'];
+            $row['status_color'] = $getStatusOfBatch['color'];
+            $row['progress'] = $batch->progress();
+            $row['file_path'] = load_file($item->file_path);
+
+            array_push($data, $row);
+        }
+
+        return $data;
     }
 
     /**
@@ -115,4 +138,49 @@ class LogImportsController extends Controller
         return $filteredHeader;
     }
 
+    /**
+     * Get status of batch jobs
+     * 
+     * @param mixed $batch
+     * 
+     * @return array
+     */
+    public function getStatusOfBatch($batch) 
+    {
+        $batchIsNotCancelled = ! $batch->cancelledAt;
+        $batchIsNotFailed = ! $batch->failedJobs;
+
+        if (
+            $batchIsNotCancelled && 
+            $batch->failedJobs > 0 && 
+            $batch->totalJobs - $batch->pendingJobs < $batch->totalJobs
+        ) {
+            $status = [
+                'status' => 'failed',
+                'color' => 'danger'
+            ];
+        } else if ($batchIsNotCancelled && $batch->totalJobs - $batch->pendingJobs == $batch->totalJobs) {
+            $status = [
+                'status' => 'completed',
+                'color' => 'success'
+            ];
+        } else if ($batchIsNotCancelled && $batch->totalJobs - $batch->pendingJobs != $batch->totalJobs) {
+            $status = [
+                'status' => 'processing',
+                'color' => 'primary'
+            ];
+        } else if ($batchIsNotCancelled && $batch->pendingJobs > 0 && $batchIsNotFailed) {
+            $status = [
+                'status' => 'pending',
+                'color' => 'dark'
+            ];
+        } else {
+            $status = [
+                'status' => 'cancelled',
+                'color' => 'warning'
+            ];
+        }
+
+        return $status;
+    }
 }
