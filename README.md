@@ -1,66 +1,86 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Uploading CSV files in Laravel
+A demo project with Laravel 10 to import large CSV file with batch jobs and laravel horizon to monitor it. In this project it uses a pusher websocket to update progress in realtime, so you need to register an account and setup to your project but you can use my credential to try it out.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Installation
+For the installation you can clone this project to your local computer.
+```bash
+git clone https://github.com/sandinur157/upload-csv-in-laravel
+```
 
-## About Laravel
+Navigate to the project folder.
+```bash
+cd upload-csv-in-laravel
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Install required packages.
+```bash
+composer install
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Create a new .env file and edit the database credentials there.
+```bash
+cp .env.example .env
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Configuration
+### Queue Connection.
+In this case, you can set the value to `database` or `redis`.
 
-## Learning Laravel
+If you use `redis` as the value, sometimes you will find inconsistent data. I have tried several times using `redis` and I found the progress of jobs stuck at 56%, 75%, etc. Until the status changed to cancelled but the data was successfully imported to the database.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+If you use `database` as the value, you need to run the queue command manually. If you use `redis` as the value you don't need to run queue command manually, you only need to run horizon command.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+QUEUE_CONNECTION=database
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Redis Connection.
+```bash
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+REDIS_CLIENT=predis
+```
 
-## Laravel Sponsors
+### Pusher Connection
+You can use this credentials to run your project, however I will delete them in one month after the project published.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+BROADCAST_DRIVER=pusher
 
-### Premium Partners
+PUSHER_APP_ID="1683524"
+PUSHER_APP_KEY="3ce7dfc6d3fab8ba50cc"
+PUSHER_APP_SECRET="2d2a9b27b95e5c34b893"
+PUSHER_HOST=
+PUSHER_PORT=443
+PUSHER_SCHEME=https
+PUSHER_APP_CLUSTER="ap1"
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Run Commands
+Generate new app key.
+```bash
+php artisan key:generate
+```
 
-## Contributing
+Run migrations.
+```bash
+php artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Run queue command if you set the connection as database.
+```bash
+php artisan queue:listen
+```
 
-## Code of Conduct
+Run horizon command.
+```bash
+php artisan horizon
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Run your app.
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+That's it: launch the main URL.
