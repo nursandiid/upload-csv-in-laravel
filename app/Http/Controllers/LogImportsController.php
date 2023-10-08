@@ -159,17 +159,28 @@ class LogImportsController extends Controller
                 'status' => 'failed',
                 'color' => 'danger'
             ];
-        } else if ($batchIsNotCancelled && $batch->totalJobs - $batch->pendingJobs == $batch->totalJobs) {
+        } else if (
+            $batchIsNotCancelled && 
+            $batch->totalJobs - $batch->pendingJobs == $batch->totalJobs
+        ) {
             $status = [
                 'status' => 'completed',
                 'color' => 'success'
             ];
-        } else if ($batchIsNotCancelled && $batch->totalJobs - $batch->pendingJobs != $batch->totalJobs) {
+        } else if (
+            $batchIsNotCancelled && 
+            $batch->totalJobs - $batch->pendingJobs != $batch->totalJobs && 
+            $batch->totalJobs != $batch->pendingJobs
+        ) {
             $status = [
                 'status' => 'processing',
                 'color' => 'primary'
             ];
-        } else if ($batchIsNotCancelled && $batch->pendingJobs > 0 && $batchIsNotFailed) {
+        } else if (
+            $batchIsNotCancelled && 
+            $batch->totalJobs == $batch->pendingJobs && 
+            $batchIsNotFailed
+        ) {
             $status = [
                 'status' => 'pending',
                 'color' => 'dark'

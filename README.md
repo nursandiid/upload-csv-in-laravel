@@ -1,6 +1,8 @@
 # Uploading CSV files in Laravel
 A demo project with Laravel 10 to import large CSV file with batch jobs and laravel horizon to monitor it. In this project it uses a pusher websocket to update progress in realtime, so you need to register an account and setup to your project but you can use my credential to try it out.
 
+<img src="https://raw.githubusercontent.com/sandinur157/upload-csv-in-laravel/main/public/img/screenshot-1.png" style="border-radius: 5px;">
+
 ## Installation
 For the installation you can clone this project to your local computer.
 ```bash
@@ -23,7 +25,18 @@ cp .env.example .env
 ```
 
 ## Configuration
-### Queue Connection.
+
+### Database Connection
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=upload_csv_in_laravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### Queue Connection
 In this case, you can set the value to `database` or `redis`.
 
 If you use `redis` as the value, sometimes you will find inconsistent data. I have tried several times using `redis` and I found the progress of jobs stuck at 56%, 75%, etc. Until the status changed to cancelled but the data was successfully imported to the database.
@@ -34,7 +47,7 @@ If you use `database` as the value, you need to run the queue command manually. 
 QUEUE_CONNECTION=database
 ```
 
-### Redis Connection.
+### Redis Connection
 ```bash
 REDIS_HOST=127.0.0.1
 REDIS_PASSWORD=null
@@ -68,6 +81,11 @@ Run migrations.
 php artisan migrate
 ```
 
+Generate symlink to view file in storage.
+```bash
+php artisan storage:link
+```
+
 Run queue command if you set the connection as database.
 ```bash
 php artisan queue:listen
@@ -83,4 +101,7 @@ Run your app.
 php artisan serve
 ```
 
-That's it: launch the main URL.
+That's it: 
+
+- Launch the main URL http://127.0.0.1:8000
+- Launch this url to monitor jobs http://127.0.0.1:8000/horizon
