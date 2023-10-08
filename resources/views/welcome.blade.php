@@ -37,10 +37,19 @@
                         @enderror
 
                         @if (session()->has('success_msg'))
-                        <div class="alert alert-success alert-dismissible fade show mt-3 mb-0" role="alert">
-                            {{ session('success_msg') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
+                        <x-alert 
+                            type="success" 
+                            message="{{ session('success_msg') }}" 
+                            close="true" 
+                            class="alert-dismissible fade show mt-3 mb-0" />
+                        @endif
+
+                        @if (session()->has('error_msg'))
+                        <x-alert 
+                            type="danger" 
+                            message="{{ session('error_msg') }}" 
+                            close="true" 
+                            class="alert-dismissible fade show mt-3 mb-0" />
                         @endif
                     </div>
                     <div class="col-lg-3 col-6">
